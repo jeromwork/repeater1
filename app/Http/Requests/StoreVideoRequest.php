@@ -6,14 +6,10 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreVideoRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
+
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,8 +20,9 @@ class StoreVideoRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required',
-            'video' => 'required|file|mimetypes:video/mp4,video/mpeg,video/x-matroska',
+            'title' => ['required'],
+            //'video' => ['required', 'file|mimetypes:video/mp4,video/mpeg,video/x-matroska'],
+            'video' => ['required', 'file'],
         ];
     }
 }
