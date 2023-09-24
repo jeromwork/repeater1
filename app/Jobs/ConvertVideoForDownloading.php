@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Video;
+use App\Models\Video;
 use Carbon\Carbon;
 use FFMpeg;
 use FFMpeg\Coordinate\Dimension;
@@ -42,7 +42,7 @@ class ConvertVideoForDownloading implements ShouldQueue
             ->export()
 
             // tell the MediaExporter to which disk and in which format we want to export...
-            ->toDisk('downloadable_videos')
+            ->toDisk('my_files')
             ->inFormat($lowBitrateFormat)
 
             // call the 'save' method with a filename...

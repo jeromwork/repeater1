@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Video;
+use App\Models\Video;
 use Carbon\Carbon;
 use FFMpeg;
 use FFMpeg\Format\Video\X264;
@@ -36,7 +36,7 @@ class ConvertVideoForStreaming implements ShouldQueue
 
             // call the 'exportForHLS' method and specify the disk to which we want to export...
             ->exportForHLS()
-            ->toDisk('streamable_videos')
+            ->toDisk('public')
 
             // we'll add different formats so the stream will play smoothly
             // with all kinds of internet connections...
