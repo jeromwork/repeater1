@@ -3,12 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Requests\StoreVideoRequest;
-use App\Jobs\ConvertVideoForStreaming;
-use App\Models\Video;
-
-use Illuminate\Support\Str;
-use Livewire\Component;
 
 class VideoController extends Controller
 {
@@ -34,44 +28,17 @@ class VideoController extends Controller
         $request->video->storeAs('public', $path);
 
         $video = Video::create([
-            'disk'          => 'public',
+            'disk'          => 'videos_disk',
             'original_name' => $request->video->getClientOriginalName(),
-            'path'          => $path,
+            'path'          => $request->video->store('videos', 'videos_disk'),
             'title'         => $request->title,
         ]);
 
-        ConvertVideoForStreaming::dispatch($video);
+        $this->dispatch(new ConvertVideoForDownloading($video));
+        $this->dispatch(new ConvertVideoForStreaming($video));
 
-        return redirect('/uploader')
-            ->with(
-                'message',
-                'Your video will be available shortly after we process it'
-            );
+        return response()->json([
+            'id' => $video->id,
+        ], 201);
     }
-
-
-    /**
-     * Return video blade view and pass videos to it.
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function index()
-    {
-        $videos = Video::orderBy('created_at', 'DESC')->get();
-        return view('videos')->with('videos', $videos);
-    }
-
-    /**
-     * Return uploader form view for uploading videos
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function uploader(){
-        return view('uploader');
-    }
-
-    /**
-     * Handles form submission after uploader form submits
-     * @param StoreVideoRequest $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
-
 }
